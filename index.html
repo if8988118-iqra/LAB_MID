@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Tidepop: Typing Challenge (CSC336 Lab Mid)</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;800&family=DM+Sans:wght@400;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div id="screen-feedback-overlay"></div>
+    <canvas id="confetti-canvas"></canvas>
+
+    <header class="top">
+        <button class="brand" onclick="window.app && window.app.navigate('home')" aria-label="Tidepop home">
+            <span class="drop">T</span><span><b>Tidepop</b><small>CSC336 Web Technologies, Lab Mid</small></span>
+        </button>
+        <div class="active-keyset-indicator hidden"></div>
+        <nav class="tools">
+            <button id="btn-open-files" class="btn">Practice files</button>
+            <button id="btn-open-history" class="btn">History</button>
+            <button id="btn-open-instructions" class="btn">How to play</button>
+            <button id="btn-sound-toggle" class="btn icon" title="Sound on/off" aria-label="Toggle sound"><span
+                    id="sound-toggle-icon">🔊</span></button>
+        </nav>
+    </header>
+
+    <main>
+        <!-- HOME -->
+        <section id="screen-home" class="game-screen flex home">
+            <div class="hero">
+                <h1 aria-label="Tidepop"><span style="--c:var(--coral);--i:0">T</span><span
+                        style="--c:var(--teal);--i:1">i</span><span style="--c:var(--sun);--i:2">d</span><span
+                        style="--c:var(--lilac);--i:3">e</span><span style="--c:var(--mint);--i:4">p</span><span
+                        style="--c:var(--coral);--i:5">o</span><span style="--c:var(--teal);--i:6">p</span></h1>
+                <p>Two typing games for your keyboard. Pop floating letters, then chase the key that lights up. Pick a
+                    mode to begin.</p>
+            </div>
+            <div class="cards">
+                <article id="card-mode-bubbles" class="card a" tabindex="0" role="button">
+                    <h2>Bubbles</h2>
+                    <p class="sub">Mode A: letter recognition</p>
+                    <p>Letters rise from the bottom. Press the matching key to pop each one before it touches the
+                        surface. A wrong key costs points.</p>
+                    <p class="best">Best score: <b id="home-high-bubble">0 PTS</b></p>
+                    <span class="btn main">Start Bubbles</span>
+                </article>
+                <article id="card-mode-magnet" class="card b" tabindex="0" role="button">
+                    <h2>KeyMagnet</h2>
+                    <p class="sub">Mode B: keyboard precision</p>
+                    <p>One target key glows on an on-screen keyboard. Find it fast. Home-row, top-row, bottom-row, full
+                        alphabet and your own files are all fair game.</p>
+                    <p class="best">Best score: <b id="home-high-magnet">0 PTS</b></p>
+                    <span class="btn main">Start KeyMagnet</span>
+                </article>
+            </div>
+            <p class="strip">Have your own words? <button class="link"
+                    onclick="window.app && window.app.openModal('modal-file-hub')">Upload a .txt or .json practice
+                    file</button></p>
+        </section>
+
+        <!-- BUBBLES -->
+        <section id="screen-bubbles" class="game-screen hidden col">
+            <div class="bar">
+                <button class="btn btn-back-home">Home</button>
+                <h2>Bubbles</h2>
+                <div class="seg" role="group" aria-label="Difficulty">
+                    <button class="difficulty-btn" data-difficulty="easy">Easy</button>
+                    <button class="difficulty-btn on" data-difficulty="medium">Medium</button>
+                    <button class="difficulty-btn" data-difficulty="hard">Hard</button>
+                </div>
+                <div class="ctrl">
+                    <button id="btn-bubble-start" class="btn main">Start Game</button>
+                    <button id="btn-bubble-restart" class="btn">Restart</button>
+                    <button id="btn-bubble-reset" class="btn">Reset</button>
+                </div>
+            </div>
+            <div class="hud">
+                <div class="stat-chip"><span class="stat-chip-label">Score</span><span id="hud-score"
+                        class="stat-chip-value">0</span></div>
+                <div class="stat-chip"><span class="stat-chip-label">Lives left</span><span id="hud-misses"
+                        class="stat-chip-value">♥♥♥♥♥</span></div>
+                <div class="stat-chip"><span class="stat-chip-label">Streak</span><span id="hud-streak"
+                        class="stat-chip-value">0x</span></div>
+                <div class="stat-chip"><span class="stat-chip-label">Accuracy</span><span id="hud-accuracy"
+                        class="stat-chip-value">100%</span></div>
+                <div class="stat-chip"><span class="stat-chip-label">Wave</span><span id="hud-wave"
+                        class="stat-chip-value">Wave 1</span></div>
+                <div class="stat-chip"><span class="stat-chip-label">Time</span><span id="hud-timer"
+                        class="stat-chip-value">00:00</span></div>
+            </div>
+            <div id="bubble-arena">
+                <div class="danger-boundary"><span>Surface: a bubble that touches this line is a miss</span></div>
+            </div>
+        </section>
+
+        <!-- KEYMAGNET -->
+        <section id="screen-magnet" class="game-screen hidden col">
+            <div class="bar">
+                <button class="btn btn-back-home">Home</button>
+                <h2>KeyMagnet</h2>
+                <label class="sel">Key set
+                    <select id="magnet-keyset-select">
+                        <option value="home_row">Home row (A S D F J K L)</option>
+                        <option value="top_row">Top row</option>
+                        <option value="bottom_row">Bottom row</option>
+                        <option value="alphabet">Full alphabet</option>
+                        <option value="alphanumeric">Letters and digits</option>
+                        <option value="custom">My uploaded file</option>
+                    </select>
+                </label>
+                <div class="seg" role="group" aria-label="Difficulty">
+                    <button class="difficulty-btn" data-difficulty="easy">Easy</button>
+                    <button class="difficulty-btn on" data-difficulty="medium">Medium</button>
+                    <button class="difficulty-btn" data-difficulty="hard">Hard</button>
+                </div>
+                <div class="ctrl">
+                    <button id="btn-magnet-start" class="btn main">Start Session</button>
+                    <button id="btn-magnet-restart" class="btn">Restart</button>
+                    <button id="btn-magnet-reset" class="btn">Reset</button>
+                </div>
+            </div>
+            <div class="hud">
+                <div class="stat-chip"><span class="stat-chip-label">Score</span><span id="magnet-hud-score"
+                        class="stat-chip-value">0</span></div>
+                <div class="stat-chip"><span class="stat-chip-label">Trials</span><span id="magnet-hud-trials"
+                        class="stat-chip-value">0/30</span></div>
+                <div class="stat-chip"><span class="stat-chip-label">Correct</span><span id="magnet-hud-correct"
+                        class="stat-chip-value">0</span></div>
+                <div class="stat-chip"><span class="stat-chip-label">Incorrect</span><span id="magnet-hud-incorrect"
+                        class="stat-chip-value">0</span></div>
+                <div class="stat-chip"><span class="stat-chip-label">Avg reaction</span><span id="magnet-hud-reaction"
+                        class="stat-chip-value">0ms</span></div>
+                <div class="stat-chip"><span class="stat-chip-label">Accuracy</span><span id="magnet-hud-accuracy"
+                        class="stat-chip-value">100%</span></div>
+                <div class="stat-chip"><span class="stat-chip-label">Time</span><span id="magnet-hud-timer"
+                        class="stat-chip-value">00:00</span></div>
+            </div>
+            <div id="magnet-arena">
+                <div id="magnet-target-display" class="magnet-pulse"><span id="magnet-target-key">READY</span></div>
+                <div id="magnet-hud-streak" class="combo">0x Combo</div>
+                <div id="virtual-kb" aria-label="On-screen keyboard"></div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="foot">COMSATS University Islamabad, Vehari Campus. Built with HTML5, CSS3 and JavaScript (ES6+), no
+        libraries.</footer>
+
+    <!-- RESULTS -->
+    <div id="modal-results" class="modal-backdrop">
+        <div class="modal-container">
+            <div id="res-high-banner" class="banner hidden">New personal best!</div>
+            <div class="mhead">
+                <div>
+                    <h3>Session results</h3>
+                    <p id="res-outcome" class="muted">Round completed</p>
+                </div>
+                <div class="grade"><small>Grade</small><b id="res-grade">A</b></div>
+            </div>
+            <div class="res-grid">
+                <div class="stat-chip"><span class="stat-chip-label">Final score</span><span id="res-score"
+                        class="stat-chip-value">0</span></div>
+                <div class="stat-chip"><span class="stat-chip-label">Accuracy</span><span id="res-accuracy"
+                        class="stat-chip-value">100%</span></div>
+                <div class="stat-chip"><span class="stat-chip-label">Duration</span><span id="res-duration"
+                        class="stat-chip-value">0s</span></div>
+                <div class="stat-chip"><span class="stat-chip-label">Correct</span><span id="res-correct"
+                        class="stat-chip-value">0</span></div>
+                <div class="stat-chip"><span class="stat-chip-label">Incorrect</span><span id="res-incorrect"
+                        class="stat-chip-value">0</span></div>
+                <div class="stat-chip"><span class="stat-chip-label">Best streak</span><span id="res-streak"
+                        class="stat-chip-value">0x</span></div>
+            </div>
+            <div id="res-mode-specific" class="extra"></div>
+            <div class="mfoot">
+                <button id="btn-result-play-again" class="btn main">Play again</button>
+                <button id="btn-result-home" class="btn">Menu</button>
+                <button id="btn-result-download-txt" class="btn">Scorecard (.txt)</button>
+                <button id="btn-result-download-json" class="btn">Export JSON</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- PRACTICE FILES -->
+    <div id="modal-file-hub" class="modal-backdrop">
+        <div class="modal-container">
+            <div class="mhead">
+                <div>
+                    <h3>Practice files</h3>
+                    <p class="muted">Import your own keys or words, export your results.</p>
+                </div><button class="btn icon btn-close-modal" aria-label="Close">✕</button>
+            </div>
+            <input type="file" id="custom-file-input" accept=".txt,.json" class="hidden">
+            <div id="file-drop-zone" tabindex="0">Drop a .txt or .json file here, or click to browse</div>
+            <div id="file-upload-status" class="status"></div>
+            <div class="row"><button id="btn-download-sample-json" class="btn">Sample keyset (.json)</button><button
+                    id="btn-download-sample-txt" class="btn">Sample words (.txt)</button></div>
+            <h4>Your sets</h4>
+            <div id="custom-keysets-list" class="list"></div>
+            <div class="mfoot"><button id="btn-export-history-csv" class="link">Export all matches as
+                    CSV</button><button class="btn main btn-close-modal">Done</button></div>
+        </div>
+    </div>
+
+    <!-- HISTORY -->
+    <div id="modal-history" class="modal-backdrop">
+        <div class="modal-container">
+            <div class="mhead">
+                <h3>Match history</h3><button class="btn icon btn-close-modal" aria-label="Close">✕</button>
+            </div>
+            <div id="history-sessions-list" class="list"></div>
+            <div class="mfoot"><button id="btn-clear-history" class="link danger">Clear history</button><button
+                    class="btn main btn-close-modal">Close</button></div>
+        </div>
+    </div>
+
+    <!-- HOW TO PLAY -->
+    <div id="modal-instructions" class="modal-backdrop">
+        <div class="modal-container">
+            <div class="mhead">
+                <h3>How to play</h3><button class="btn icon btn-close-modal" aria-label="Close">✕</button>
+            </div>
+            <div class="howto">
+                <h4>Bubbles</h4>
+                <p>Press the key shown on a bubble to pop it. A wrong key costs points and breaks your streak. If a
+                    bubble touches the surface line it counts as a miss, and the game ends when you run out of lives.
+                    Every 10 pops starts a faster wave.</p>
+                <h4>KeyMagnet</h4>
+                <p>Press the key that glows on the keyboard before its timer runs out. Faster correct answers earn more
+                    points. Pick a key set and a difficulty before you start; harder levels give you less time per key
+                    and more trials.</p>
+                <h4>Controls</h4>
+                <p>Start begins a game and turns into Pause during play. Restart begins a fresh session. Reset clears
+                    the board without starting. You can also tap bubbles and on-screen keys on a phone.</p>
+            </div>
+            <div class="mfoot"><button class="btn main btn-close-modal">Got it</button></div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>

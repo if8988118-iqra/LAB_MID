@@ -1,0 +1,415 @@
+/* Pip the mascot (original character, pure SVG + CSS) */
+.pip {
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+.pip .skin,
+.pip .hand {
+  fill: var(--b1);
+}
+.pip .eye {
+  fill: #1b2a33;
+}
+.pip .gl {
+  fill: #fff;
+}
+.pip .shine {
+  stroke: #fff;
+  stroke-opacity: 0.55;
+  stroke-width: 8;
+  fill: none;
+  stroke-linecap: round;
+}
+.pip .blush {
+  fill: var(--coral);
+  opacity: 0.4;
+}
+.pip .shadow {
+  fill: #0003;
+}
+.pip .stem {
+  stroke: var(--b2);
+  stroke-width: 5;
+  fill: none;
+  stroke-linecap: round;
+}
+.pip .leaf {
+  fill: var(--b2);
+}
+.pip .smile,
+.pip .sad,
+.pip .eyes-happy path {
+  fill: none;
+  stroke: #1b2a33;
+  stroke-width: 5;
+  stroke-linecap: round;
+}
+.pip .eyes-happy,
+.pip .sad {
+  display: none;
+}
+.pip .bod {
+  transform-box: fill-box;
+  transform-origin: center bottom;
+  animation: bob 2.6s ease-in-out infinite;
+}
+.pip .eyes {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: blink 4s infinite;
+}
+.pip .hand {
+  transform-box: fill-box;
+  transform-origin: left center;
+  animation: wave 1.2s ease-in-out infinite;
+}
+.pip.happy .eyes {
+  display: none;
+}
+.pip.happy .eyes-happy {
+  display: inline;
+}
+.pip.happy .bod {
+  animation: hop 0.5s;
+}
+.pip.oops .smile {
+  display: none;
+}
+.pip.oops .sad {
+  display: inline;
+}
+.pip.oops .bod {
+  animation: shake 0.4s;
+}
+@keyframes bob {
+  50% {
+    transform: translateY(-6px) scale(1.02, 0.98);
+  }
+}
+@keyframes blink {
+  0%,
+  92%,
+  100% {
+    transform: scaleY(1);
+  }
+  95% {
+    transform: scaleY(0.1);
+  }
+}
+@keyframes wave {
+  50% {
+    transform: rotate(-25deg);
+  }
+}
+@keyframes hop {
+  40% {
+    transform: translateY(-22px);
+  }
+}
+#pip-mini {
+  position: fixed;
+  right: 0.75rem;
+  bottom: 0.75rem;
+  width: 64px;
+  z-index: 15;
+  pointer-events: none;
+}
+
+/* Intro */
+#intro {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  background: radial-gradient(
+    circle at 50% 40%,
+    color-mix(in srgb, var(--paper), #fff 45%),
+    var(--paper)
+  );
+  transition: opacity 0.5s;
+}
+#intro.out {
+  opacity: 0;
+  pointer-events: none;
+}
+.rays {
+  position: absolute;
+  inset: -60%;
+  background: repeating-conic-gradient(
+    color-mix(in srgb, var(--b1) 16%, transparent) 0 6deg,
+    transparent 6deg 12deg
+  );
+  animation: spin 40s linear infinite;
+}
+@keyframes spin {
+  to {
+    transform: rotate(1turn);
+  }
+}
+.sp {
+  position: absolute;
+  color: var(--sun);
+  animation: tw 1.8s ease-in-out infinite;
+}
+@keyframes tw {
+  50% {
+    transform: scale(1.6) rotate(20deg);
+    opacity: 0.3;
+  }
+}
+.rb {
+  position: absolute;
+  bottom: -70px;
+  width: var(--s);
+  height: var(--s);
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 30% 28%, #fffa 0 14%, transparent 15%),
+    color-mix(in srgb, var(--c) 70%, transparent);
+  animation: rise2 var(--d) linear infinite;
+}
+@keyframes rise2 {
+  to {
+    transform: translateY(-120vh);
+  }
+}
+.istage {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 1rem;
+  text-align: center;
+}
+.istage .pip {
+  width: min(48vw, 250px);
+  animation: drop 0.9s cubic-bezier(0.3, 1.5, 0.5, 1) both;
+}
+@keyframes drop {
+  from {
+    transform: translateY(-100vh) scale(0.6);
+  }
+}
+.say {
+  min-height: 3.2rem;
+  max-width: min(88vw, 380px);
+  background: var(--card);
+  border: 3px solid var(--ink);
+  border-radius: 20px;
+  padding: 0.6rem 1rem;
+  font:
+    700 1.1rem "DM Sans",
+    sans-serif;
+  position: relative;
+  animation: pop 0.5s 0.6s both;
+}
+.say::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: -14px;
+  width: 18px;
+  height: 18px;
+  background: var(--card);
+  border-right: 3px solid var(--ink);
+  border-bottom: 3px solid var(--ink);
+  transform: translateX(-50%) rotate(45deg);
+}
+@keyframes pop {
+  from {
+    transform: scale(0);
+  }
+}
+.ititle {
+  font-size: clamp(2.4rem, 10vw, 4rem);
+  animation: pop 0.5s 1s both;
+}
+.ibtns {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  animation: pop 0.5s 1.3s both;
+}
+
+/* Toast */
+#toast {
+  position: fixed;
+  top: 1rem;
+  left: 50%;
+  z-index: 130;
+  transform: translate(-50%, -150%);
+  background: var(--ink);
+  color: var(--paper);
+  padding: 0.6rem 1.1rem;
+  border-radius: 14px;
+  font-weight: 700;
+  transition: transform 0.35s;
+  max-width: 90vw;
+  text-align: center;
+}
+#toast.show {
+  transform: translate(-50%, 0);
+}
+
+/* Word Rush and Speed Test */
+.card.c {
+  border-top: 10px solid var(--b3);
+}
+.card.d {
+  border-top: 10px solid var(--b4);
+}
+.tbox {
+  background: var(--card);
+  border: 2px solid var(--line);
+  border-radius: 26px;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+.tshow {
+  font:
+    600 clamp(1.2rem, 3.6vw, 1.8rem)/1.7 "DM Sans",
+    sans-serif;
+  min-height: 5rem;
+  word-break: break-word;
+}
+.tshow.w {
+  font:
+    800 clamp(2.4rem, 10vw, 4.2rem) "Bricolage Grotesque",
+    sans-serif;
+  text-align: center;
+  letter-spacing: 0.04em;
+  min-height: 5rem;
+}
+.tshow .ok {
+  color: var(--good);
+}
+.tshow .bad {
+  color: var(--bad);
+  background: #e5484d22;
+  border-radius: 4px;
+}
+.tshow .cur {
+  border-bottom: 3px solid var(--coral);
+}
+.ready {
+  color: var(--mute);
+}
+.tin {
+  width: 100%;
+  font:
+    600 1.2rem "DM Sans",
+    sans-serif;
+  padding: 0.8rem 1rem;
+  border: 2px solid var(--line);
+  border-radius: 14px;
+  background: var(--soft);
+  color: var(--ink);
+  resize: none;
+}
+.tin:focus {
+  outline: none;
+  border-color: var(--coral);
+}
+.tin:disabled {
+  opacity: 0.55;
+}
+.tip {
+  color: var(--mute);
+  font-size: 0.9rem;
+  text-align: center;
+  margin: 0;
+}
+
+/* Profile */
+.lvl b {
+  font:
+    800 1.8rem "Bricolage Grotesque",
+    sans-serif;
+  margin-right: 0.6rem;
+}
+.xpbar {
+  height: 12px;
+  border-radius: 9px;
+  background: var(--soft);
+  border: 2px solid var(--line);
+  overflow: hidden;
+  margin-top: 0.4rem;
+}
+.xpbar i {
+  display: block;
+  height: 100%;
+  background: var(--coral);
+}
+.badges {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: 0.5rem;
+}
+.badge {
+  border: 2px solid var(--line);
+  border-radius: 14px;
+  padding: 0.55rem;
+  font-size: 0.85rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  opacity: 0.45;
+}
+.badge b::before {
+  content: "☆ ";
+}
+.badge.on {
+  opacity: 1;
+  border-color: var(--sun);
+  background: var(--tint);
+}
+.badge.on b::before {
+  content: "★ ";
+  color: var(--sun);
+}
+.badge small {
+  color: var(--mute);
+}
+#home-stats {
+  margin-bottom: 0;
+}
+.foot .link {
+  font-size: 0.8rem;
+}
+@media (max-width: 760px) {
+  #pip-mini {
+    width: 48px;
+  }
+}
+
+/* Pip talking */
+.pip.talk .smile {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: talk 0.22s ease-in-out infinite alternate;
+}
+@keyframes talk {
+  from {
+    transform: scaleY(0.5);
+  }
+  to {
+    transform: scaleY(2.2);
+  }
+}
+.say:empty {
+  visibility: hidden;
+}
+#intro-meet {
+  animation: nudge 1s ease-in-out infinite;
+}
+@keyframes nudge {
+  50% {
+    transform: scale(1.08);
+  }
+}

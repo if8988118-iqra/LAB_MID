@@ -1,5 +1,7 @@
 # LAB_MID
-https://github.com/user-attachments/assets/895401b2-039c-45ef-9eb3-54663a2b5908
+
+https://github.com/user-attachments/assets/4ed9b226-b1d6-40c9-8f79-0abc683820a0
+
 <img width="959" height="418" alt="Screenshot 2026-11-04 094613" src="https://github.com/user-attachments/assets/9723a018-26c1-4fba-872c-17ef03e8fc56" />
 <img width="956" height="450" alt="Screenshot 2026-11-04 094625" src="https://github.com/user-attachments/assets/ee3bec8c-677a-4a4e-b714-8ea9f504d536" />
 <img width="959" height="457" alt="Screenshot 2026-11-04 094633" src="https://github.com/user-attachments/assets/2df59f1f-6c95-45f9-ad8c-ac1def2bdd5e" />
